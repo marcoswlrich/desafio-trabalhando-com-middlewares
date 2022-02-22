@@ -32,7 +32,7 @@ function checksCreateTodosUserAvailability(request, response, next) {
 
   if (!userPro && todosRegistered >= 10) {
     return response
-      .status(404)
+      .status(403)
       .json({ error: "Unable to register a new task." });
   }
 
@@ -40,7 +40,24 @@ function checksCreateTodosUserAvailability(request, response, next) {
 }
 
 function checksTodoExists(request, response, next) {
-  // Complete aqui
+  const { username } = request.headers;
+  const { id } = request.params;
+
+  const todoIdValidation = validate(id);
+  if (!todoIdValidation) {
+    return response.status(400).json({ error: "Invalid id" });
+  }
+
+  const validUser = users.find((user) => user.username === username);
+  const userTodoId = validUser.todos.find((todo) => todo.id === id);
+  if (!validUser || !userTodoId) {
+    return response.status(404).json({ error: "User or todo does not exist." });
+  }
+
+  request.user = validUser;
+  request.todo = userTodoId;
+
+  return next();
 }
 
 function findUserById(request, response, next) {
