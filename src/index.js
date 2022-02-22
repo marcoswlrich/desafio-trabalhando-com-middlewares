@@ -49,7 +49,7 @@ function checksTodoExists(request, response, next) {
   }
 
   const validUser = users.find((user) => user.username === username);
-  const userTodoId = validUser.todos.find((todo) => todo.id === id);
+  const userTodoId = validUser?.todos.find((todo) => todo.id === id);
   if (!validUser || !userTodoId) {
     return response.status(404).json({ error: "User or todo does not exist." });
   }
