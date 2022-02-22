@@ -25,7 +25,18 @@ function checksExistsUserAccount(request, response, next) {
 }
 
 function checksCreateTodosUserAvailability(request, response, next) {
-  // Complete aqui
+  const { user } = request;
+
+  const userPro = user.pro;
+  const todosRegistered = user.todos.length;
+
+  if (!userPro && todosRegistered >= 10) {
+    return response
+      .status(404)
+      .json({ error: "Unable to register a new task." });
+  }
+
+  return next();
 }
 
 function checksTodoExists(request, response, next) {
